@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land Registry DApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-landmark text-indigo-600 text-2xl mr-2"></i>
+                    <span class="text-xl font-semibold">Land Registry DApp</span>
+                </div>
+                <div class="flex items-center">
+                    <button id="connectWallet" 
+                            class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Connect Wallet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Features Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <i class="fas fa-file-contract text-indigo-600 text-2xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Smart Contracts</h3>
+                <p class="text-gray-600">Secure and transparent land registration using blockchain technology</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <i class="fas fa-shield-alt text-indigo-600 text-2xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Verified Records</h3>
+                <p class="text-gray-600">All land records are verified by authorized verifiers</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <i class="fas fa-exchange-alt text-indigo-600 text-2xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Easy Transfer</h3>
+                <p class="text-gray-600">Automated verification and transfer process using smart contracts</p>
+            </div>
+        </div>
+
+        <!-- Admin Section -->
+        <div id="adminSection" class="bg-white rounded-lg shadow-md p-8 mb-8 hidden">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6">Admin Panel</h2>
+            <form id="addVerifierForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Add Verifier</label>
+                    <div class="flex space-x-2">
+                        <input type="text" name="verifierAddress" placeholder="Verifier Address" 
+                               class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        <button type="submit" 
+                                class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Add Verifier
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- User's Lands Section -->
+        <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6">My Lands</h2>
+            <div id="userLands" class="space-y-4">
+                <!-- Land cards will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Registration Form Section -->
+        <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6">Register New Land</h2>
+            <form id="landRegistrationForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Owner Name</label>
+                        <input type="text" name="ownerName" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Land Area (sq. ft)</label>
+                        <input type="number" name="area" required min="1"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                        <input type="text" name="location" required
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Value (ETH)</label>
+                        <input type="number" name="value" required min="0.01" step="0.01"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Property Description</label>
+                    <textarea name="description" required
+                              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" 
+                              rows="4"></textarea>
+                </div>
+                <div>
+                    <button type="submit" 
+                            class="w-full bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Register Land
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-center text-gray-500">© 2024 Land Registry DApp. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+</body>
+</html>
